@@ -11,7 +11,12 @@ def obter_dados():
         dados = json.loads(arq.read())
     return dados
 
-def listar_categorias(dados):
+def listar_categorias(dados: list) -> list:
+    '''
+    Função para listar as categorias dos produtos presentes na lista.
+    PARAMETROS: lista de dicionários representando os produtos
+    RETORNO: lista contendo todas as categorias existentes nos produtos da lista de entrada
+    '''
     lista_de_categorias = []
     
     for item in dados:
@@ -20,11 +25,11 @@ def listar_categorias(dados):
     
     return lista_de_categorias
 
-def listar_por_categoria(dados, categoria):
+def listar_por_categoria(dados: list, categoria: str) -> list:
     '''
-    O parâmetro "dados" deve ser uma lista de dicionários representando os produtos.
-    O parâmetro "categoria" é uma string contendo o nome de uma categoria.
-    Essa função deverá retornar uma lista contendo todos os produtos pertencentes à categoria dada.
+    Função para listar os produtos de uma categoria.
+    PARAMETROS: lista de dicionários representando os produtos; uma string contendo o nome de uma categoria
+    RETORNO: lista contendo todos os produtos pertencentes à categoria dada
     '''
     lista_categoria = []
     for item in dados:
@@ -34,11 +39,11 @@ def listar_por_categoria(dados, categoria):
     return lista_categoria
     
 
-def produto_mais_caro(dados, categoria):
+def produto_mais_caro(dados: list, categoria: str) -> dict:
     '''
-    O parâmetro "dados" deve ser uma lista de dicionários representando os produtos.
-    O parâmetro "categoria" é uma string contendo o nome de uma categoria.
-    Essa função deverá retornar um dicionário representando o produto mais caro da categoria dada.
+    Função para listar o produto mais caro de uma categoria.
+    PARAMETROS: lista de dicionários representando os produtos; uma string contendo o nome de uma categoria
+    RETORNO: um dicionário representando o produto mais caro da categoria dada.
     '''
     lista_categoria = listar_por_categoria(dados, categoria)
     lista_ordenada_mais_caro = sorted(lista_categoria, key=lambda x: float(x["preco"]), reverse=True)
@@ -46,34 +51,41 @@ def produto_mais_caro(dados, categoria):
     return lista_ordenada_mais_caro[0]
 
 
-def produto_mais_barato(dados, categoria):
+def produto_mais_barato(dados: list, categoria: str) -> dict:
     '''
-    O parâmetro "dados" deve ser uma lista de dicionários representando os produtos.
-    O parâmetro "categoria" é uma string contendo o nome de uma categoria.
-    Essa função deverá retornar um dicionário representando o produto mais caro da categoria dada.
+    Função para listar o produto mais barato de uma categoria.
+    PARAMETROS: lista de dicionários representando os produtos; uma string contendo o nome de uma categoria
+    RETORNO: um dicionário representando o produto mais barato da categoria dada.
     '''
     lista_categoria = listar_por_categoria(dados, categoria)
     lista_ordenada_mais_barato = sorted(lista_categoria, key=lambda x: float(x["preco"]))
 
     return lista_ordenada_mais_barato[0]
 
-def top_10_caros(dados):
+def top_10_caros(dados: list) -> list:
     '''
-    O parâmetro "dados" deve ser uma lista de dicionários representando os produtos.
-    Essa função deverá retornar uma lista de dicionários representando os 10 produtos mais caros.
+    Função para listar os 10 produtos mais caros da lista de dicionários.
+    PARAMETROS: lista de dicionários representando os produtos
+    RETORNO: uma lista de dicionários representando os 10 produtos mais caros.
     '''
     lista_top_10_caros = sorted(dados, key=lambda x: float(x["preco"]), reverse=True)
     return lista_top_10_caros[0:10]
 
-def top_10_baratos(dados):
+def top_10_baratos(dados: list) -> list:
     '''
-    O parâmetro "dados" deve ser uma lista de dicionários representando os produtos.
-    Essa função deverá retornar uma lista de dicionários representando os 10 produtos mais caros.
+    Função para listar os 10 produtos mais baratos da lista de dicionários.
+    PARAMETROS: lista de dicionários representando os produtos
+    RETORNO: uma lista de dicionários representando os 10 produtos mais baratos.
     '''
     lista_top_10_baratos = sorted(dados, key=lambda x: float(x["preco"]))
     return lista_top_10_baratos[0:10]
 
-def menu(dados):
+
+def print_lista(dados: list) -> None:
+    for item in lista:
+        print(f"R$ {item['preco']} | {item['id']} | {item['categoria']}")
+
+def menu(dados: list) -> None:
     ativo = 1
 
     while ativo == 1:
@@ -98,31 +110,23 @@ def menu(dados):
         if opt == 1:
             lista = listar_categorias(dados)
 
-            print("As categorias disponíveis são:")
-            j = 0
-            for i in range (0,len(lista)):
-                print(lista[i], end="")
-                if j != 3:
-                    print(" | ", end = "")
-                    j += 1
-                if j == 3:
-                    print()
-                    j = 0
-
+            print("As categorias disponíveis são:" ,(" | ").join(lista))
             ativo = 1
+
         elif opt == 2:
             cat = input("Digite a categoria desejada: ")
-            resultado = listar_por_categoria(dados, cat)
-            for item in resultado:
-                print(f"{item['id']} | {item['categoria']} | {item['preco']}")
+            lista_cat = listar_por_categoria(dados, cat)
+            print_lista(lista_cat)
 
             ativo = 1
+
         elif opt == 3:
             cat = input("Digite a categoria desejada: ")
             mais_caro_cat = produto_mais_caro(dados, cat)
 
             print(f"O produto mais caro na categoria {cat} é:\n{mais_caro_cat['id']} | R${mais_caro_cat['preco']}")
             ativo = 1
+
         elif opt == 4:
             cat = input("Digite a categoria desejada: ")
             mais_barato_cat = produto_mais_barato(dados, cat)
@@ -130,25 +134,23 @@ def menu(dados):
             print(f"O produto mais barato na categoria {cat} é:\n{mais_barato_cat['id']} | R${mais_barato_cat['preco']}")
 
             ativo = 1
+
         elif opt == 5:    
-            lista_top = top_10_caros(dados)   
-
-            print("--- TOP 10 PRODUTOS MAIS CAROS ---")
-            for item in lista_top:
-                print(f"R$ {item['preco']} | {item['id']} | {item['categoria']}")
-
+            lista_top = top_10_caros(dados)
+            print(f"--- TOP 10 PRODUTOS MAIS CAROS ---")   
+            print_lista(lista_top)
             ativo = 1
+
         elif opt == 6:
             lista_top = top_10_baratos(dados)
+            print(f"--- TOP 10 PRODUTOS MAIS BARATOS ---")   
+            print_lista(lista_top)
+            ativo = 1
 
-            print("--- TOP 10 PRODUTOS MAIS BARATOS ---")
-            for item in lista_top:
-                print(f"R$ {item['preco']} | {item['id']} | {item['categoria']}")
-
-            ativo = 0
         elif opt == 0:
             print("Até mais!")
-            return False
+            ativo = 0
+
         else: 
             print("Opção inválida. Tente novamente.")
             ativo = 1
