@@ -81,9 +81,9 @@ def top_10_baratos(dados: list) -> list:
     return lista_top_10_baratos[0:10]
 
 
-def print_lista(dados: list) -> None:
+def print_lista(lista: list) -> None:
     for item in lista:
-        print(f"R$ {item['preco']} | {item['id']} | {item['categoria']}")
+        print(f"{item['id']} | R$ {item['preco']} | {item['categoria']}")
 
 def menu(dados: list) -> None:
     ativo = 1
@@ -114,37 +114,33 @@ def menu(dados: list) -> None:
             ativo = 1
 
         elif opt == 2:
-            cat = input("Digite a categoria desejada: ")
-            lista_cat = listar_por_categoria(dados, cat)
+            cat = input("Digite a categoria desejada : ")
+            lista_cat = sorted(listar_por_categoria(dados, cat), key= lambda x: float(x['preco']))
             print_lista(lista_cat)
-
             ativo = 1
 
         elif opt == 3:
             cat = input("Digite a categoria desejada: ")
-            mais_caro_cat = produto_mais_caro(dados, cat)
-
-            print(f"O produto mais caro na categoria {cat} é:\n{mais_caro_cat['id']} | R${mais_caro_cat['preco']}")
+            mais_caro = produto_mais_caro(dados, cat)
+            print(f"O produto mais caro na categoria {cat} é:\n{mais_caro['id']} | R${mais_caro['preco']}")
             ativo = 1
 
         elif opt == 4:
             cat = input("Digite a categoria desejada: ")
-            mais_barato_cat = produto_mais_barato(dados, cat)
-
-            print(f"O produto mais barato na categoria {cat} é:\n{mais_barato_cat['id']} | R${mais_barato_cat['preco']}")
-
+            mais_barato = produto_mais_barato(dados, cat)
+            print(f"O produto mais barato na categoria {cat} é:\n{mais_barato['id']} | R${mais_barato['preco']}")
             ativo = 1
 
         elif opt == 5:    
-            lista_top = top_10_caros(dados)
+            lista_top_caros = top_10_caros(dados)
             print(f"--- TOP 10 PRODUTOS MAIS CAROS ---")   
-            print_lista(lista_top)
+            print_lista(lista_top_caros)
             ativo = 1
 
         elif opt == 6:
-            lista_top = top_10_baratos(dados)
+            lista_top_baratos = top_10_baratos(dados)
             print(f"--- TOP 10 PRODUTOS MAIS BARATOS ---")   
-            print_lista(lista_top)
+            print_lista(lista_top_baratos)
             ativo = 1
 
         elif opt == 0:
